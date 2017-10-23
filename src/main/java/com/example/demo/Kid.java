@@ -3,20 +3,14 @@ package com.example.demo;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "kids" )
+@Table(name = "kids")
 public class Kid {
     private int id;
     private String name;
-
-    @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "kids_subjects", joinColumns = @JoinColumn(name = "kid_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "subject_id", referencedColumnName = "id"))
-    private List<Subject> subjects = new ArrayList<>();
+    private Set<Subject> subjects;
 
     public Kid() {
     }
@@ -39,20 +33,30 @@ public class Kid {
         this.name = name;
     }
 
-    public List<Subject> getSubjects() {
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "kids_subjects", joinColumns = @JoinColumn(name = "kid_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id", referencedColumnName = "id"))
+    public Set<Subject> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<Subject> subjects) {
+    public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
     }
 
     @Override
     public String toString() {
-        return "Kid{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", subjects=" + subjects +
-                '}';
+        String result = "Kid{" + "id=" + id + ", name= " + name;
+
+        if (subjects != null) {
+            for(Subject sub: subjects) {
+                result += " ,Subject {id: " + sub.getId() + ", name: " + sub.getName() + "}";
+            }
+        }
+
+        result += "}";
+
+        return result;
     }
 }

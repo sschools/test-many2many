@@ -1,17 +1,14 @@
 package com.example.demo;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "subjects")
 public class Subject {
     private int id;
     private String name;
-
-    @ManyToMany(mappedBy = "subject")
-    private List<Kid> kids = new ArrayList<>();
+    private Set<Kid> kids;
 
     public Subject() {
     }
@@ -34,20 +31,27 @@ public class Subject {
         this.name = name;
     }
 
-    public List<Kid> getKids() {
+    @ManyToMany(mappedBy = "subjects")
+    public Set<Kid> getKids() {
         return kids;
     }
 
-    public void setKids(List<Kid> kids) {
+    public void setKids(Set<Kid> kids) {
         this.kids = kids;
     }
 
     @Override
     public String toString() {
-        return "Subject{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", kids=" + kids +
-                '}';
+        String result = "Subject{" + "id=" + id + ", name= " + name;
+
+        if (kids != null) {
+            for(Kid kid: kids) {
+                result += " ,Kid {id: " + kid.getId() + ", name: " + kid.getName() + "}";
+            }
+        }
+
+        result += "}";
+
+        return result;
     }
 }
